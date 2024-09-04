@@ -25,7 +25,7 @@ app.get('/generate-image', async (req, res) => {
         // Génération de l'image en utilisant OpenAI
         const response = await openai.images.generate({
             model: "dall-e-3",
-            prompt: text,
+            prompt: text + "il faut que ce soit absolument une créature dans l'univers de Pokémon ou palworld",
             n: 1,
             size: "1024x1024",
         });
@@ -38,7 +38,7 @@ app.get('/generate-image', async (req, res) => {
         res.json({ imageUrl });
     } catch (error) {
         console.error('Erreur lors de la création de l\'image:', error);
-        res.status(500).json({ error: 'se que tu demande ne peut pas etre générer tu a écrit de la merde .' });
+        res.status(500).json({ error: 'se que tu demande ne peut pas etre générer tu a écrit un text qui ne convient avec la politique de notre site .' });
     }
 });
 
