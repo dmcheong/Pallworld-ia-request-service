@@ -1,8 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const OpenAI = require('openai');
-const cors = require('cors'); // Importer cors
-
+const cors = require('cors');
 
 const app = express();
 const openai = new OpenAI({
@@ -15,32 +14,37 @@ app.use(cors());
 // Route pour la génération d'images
 app.get('/generate-image', async (req, res) => {
     try {
-        const { text } = req.query; // Récupération du texte saisi en paramètre
+        const { text } = req.query;
 
-        // Vérification si le texte est présent
         if (!text) {
             return res.status(400).json({ error: 'Le paramètre "text" est requis.' });
         }
 
-        // Génération de l'image en utilisant OpenAI
+        console.log("Texte pour la génération d'image :", text);
+
         const response = await openai.images.generate({
             model: "dall-e-3",
-            prompt: text + "il faut que ce soit absolument une créature dans l'univers de Pokémon ou palworld",
+            prompt: text + " dans un contexte amical et non-violent, il faut que ce soit absolument une créature dans l'univers de Pokémon ou Palworld",
             n: 1,
             size: "1024x1024",
-        });
+        });        
 
-        // Récupération de l'URL de l'image générée
-        const imageUrl = response.data;
-        console.log(imageUrl);
+        console.log("Réponse de l'API OpenAI :", response);
 
-        // Renvoi de l'URL de l'image dans la réponse
-        res.json({ imageUrl });
+        if (response && response.data && response.data.length > 0 && response.data[0].url) {
+            const imageUrl = response.data[0].url;
+            console.log("URL de l'image générée :", imageUrl);
+            res.json({ imageUrl });
+        } else {
+            console.error('La réponse de l\'API n\'a pas renvoyé de données valides.');
+            throw new Error('La réponse de l\'API n\'a pas renvoyé de données valides.');
+        }
     } catch (error) {
-        console.error('Erreur lors de la création de l\'image:', error);
-        res.status(500).json({ error: 'se que tu demande ne peut pas etre générer tu a écrit un text qui ne convient avec la politique de notre site .' });
+        console.error('Erreur lors de la création de l\'image:', error.message);
+        res.status(500).json({ error: 'Erreur lors de la génération de l\'image.' });
     }
 });
+
 
 // Démarrage du serveur
 const PORT = process.env.PORT || 3009;
