@@ -24,7 +24,7 @@ app.get('/generate-image', async (req, res) => {
 
         const response = await openai.images.generate({
             model: "dall-e-3",
-            prompt: text + " dans un contexte amical et non-violent, il faut que ce soit absolument une créature dans l'univers de Pokémon ou Palworld",
+            prompt: text + " dans un contexte amical et non-violent, une créature fantastique venant du monde de Pokémon ou Palworld.",
             n: 1,
             size: "1024x1024",
         });        
