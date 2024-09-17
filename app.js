@@ -29,8 +29,6 @@ app.get('/generate-image', async (req, res) => {
             return res.status(400).json({ error: "Vous n'avez pas assez de tokens pour générer une image." });
         }
 
-        console.log("Texte pour la génération d'image :", text);
-
         const response = await openai.images.generate({
             model: "dall-e-3",
             prompt: text + " dans un contexte amical et non-violent, une créature fantastique venant du monde de Pokémon ou Palworld.",
@@ -38,11 +36,8 @@ app.get('/generate-image', async (req, res) => {
             size: "1024x1024",
         });
 
-        console.log("Réponse de l'API OpenAI :", response);
-
         if (response && response.data && response.data.length > 0 && response.data[0].url) {
             const imageUrl = response.data[0].url;
-            console.log("URL de l'image générée :", imageUrl);
 
             // Déduction d'un token après la génération de l'image
             await axios.put(`http://localhost:3005/api/users/${userId}`, {
